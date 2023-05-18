@@ -111,3 +111,7 @@ footer {
   border-color: black;
   transition: all 200ms ease-in-out;
 }
+
+.source {
+  text-align: center;
+}
