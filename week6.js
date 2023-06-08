@@ -27,29 +27,45 @@ function currentDate(date) {
   return `${day} ${hours}:${minutes}`;
 }
 
-function displayForecast() {
+function formatDay(timestamp) {
+  let date = new Date(timestamp * 1000);
+  let day = date.getDay();
+  let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  return days[day];
+}
+
+function displayWeatherCondition() {
+  let forecast = response.data.daily;
+
   let forecastElement = document.querySelector("#forecast");
 
-  let days = ["Thu", "Fri", "Sat", "Sun", "Mon", "Tue"];
-
   let forecastHTML = `<div class="row">`;
-  days.forEach(function (day) {
-    forecastHTML =
-      forecastHTML +
-      `
+  forecast.forEach(function (forecastDay, index) {
+    if (index < 6) {
+      forecastHTML =
+        forecastHTML +
+        `
       <div class="col-2">
-        <div class="weather-forecast-date">${day}</div>
+        <div class="weather-forecast-date">${formatDay(forecastDay.dt)}</div>
         <img
-          src="http://openweathermap.org/img/wn/50d@2x.png"
+          src="http://openweathermap.org/img/wn/${
+            forecastDay.weather[0].icon
+          }@2x.png"
           alt=""
           width="42"
         />
         <div class="weather-forecast-temperatures">
-          <span class="weather-forecast-temperature-max"> 18° </span>
-          <span class="weather-forecast-temperature-min"> 12° </span>
+          <span class="weather-forecast-temperature-max"> ${Math.round(
+            forecastDay.temp.max
+          )}° </span>
+          <span class="weather-forecast-temperature-min"> ${Math.round(
+            forecastDay.temp.min
+          )}° </span>
         </div>
       </div>
   `;
+    }
   });
 
   forecastHTML = forecastHTML + `</div>`;
@@ -57,14 +73,13 @@ function displayForecast() {
 }
 
 function getForecast(coordinates) {
-  console.log(coordinates);
-  let apiKey = "3f6be1c407b0d9d1933561808db358ba";
+  let apiKey = "1d038ee28ef2727a9f0310860ac10ae9";
   let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${apiKey}&units=metric`;
   axios.get(apiUrl).then(displayForecast);
 }
 
 function displayWeatherCondition(response) {
-  document.querySelector(".city").innerHTML = response.data.name;
+  document.querySelector("#city").innerHTML = response.data.name;
   document.querySelector("#temperature").innerHTML = Math.round(
     response.data.main.temp
   );
@@ -90,7 +105,7 @@ function displayWeatherCondition(response) {
 }
 
 function searchCity(city) {
-  let apiKey = "3f6be1c407b0d9d1933561808db358ba";
+  let apiKey = "1d038ee28ef2727a9f0310860ac10ae9";
   let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
   axios.get(apiUrl).then(displayWeatherCondition);
 }
@@ -100,13 +115,13 @@ function handleSearch(event) {
   let city = document.querySelector("#city-input").value;
   searchCity(city);
 
-  let cityElement = document.querySelector(".city");
+  let cityElement = document.querySelector("#city");
   let cityInput = document.querySelector("#city-input");
   cityElement.innerHTML = cityInput.value;
 }
 
 function searchLocation(position) {
-  let apiKey = "3f6be1c407b0d9d1933561808db358ba";
+  let apiKey = "1d038ee28ef2727a9f0310860ac10ae9";
   let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=${apiKey}&units=metric`;
   axios.get(apiUrl).then(displayWeatherCondition);
 }
@@ -139,6 +154,9 @@ let dateElement = document.querySelector(".date");
 let currentTime = new Date();
 dateElement.innerHTML = currentDate(currentTime);
 
+let humidityElement = document.querySelector("#humidity");
+let windElement = document.querySelector("#wind");
+let descriptionElement = document.querySelector("#description");
 let iconElement = document.querySelector("#icon");
 
 let searchForm = document.querySelector("#search-form");
@@ -156,4 +174,4 @@ let currentLocationButton = document.querySelector("#current-location-button");
 currentLocationButton.addEventListener("click", getCurrentLocation);
 
 searchCity("London");
-displayForecast();
+displayWeatherCondition();
