@@ -25,10 +25,9 @@ body {
   margin: 40px auto;
 }
 
-h1 {
-  font-family: "Gloria Hallelujah", cursive;
-  font-size: 50px;
-  font-weight: 100;
+.city {
+  font-family: "Gloria Hallelujah";
+  font-size: 60px;
   font-style: italic;
 }
 
@@ -56,6 +55,12 @@ ul {
 li {
   font-size: 15px;
   list-style: none;
+}
+
+#description {
+  font-size: 20px;
+  font-style: italic;
+  text-transform: capitalize;
 }
 
 .units {
